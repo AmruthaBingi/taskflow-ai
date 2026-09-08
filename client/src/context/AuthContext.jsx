@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { apiRequest } from '../lib/api'
+import { apiRequest, setOnUnauthorized } from '../lib/api'
 import { AuthContext } from './authContext'
 
 export function AuthProvider({ children }) {
@@ -11,6 +11,11 @@ export function AuthProvider({ children }) {
       .then((data) => setUser(data.user))
       .catch(() => setUser(null))
       .finally(() => setIsLoading(false))
+  }, [])
+
+  useEffect(() => {
+    setOnUnauthorized(() => setUser(null))
+    return () => setOnUnauthorized(null)
   }, [])
 
   async function login(credentials) {

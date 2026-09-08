@@ -17,13 +17,22 @@ function createToken(userId) {
   });
 }
 
+function parseDurationToMs(duration) {
+  const match = duration.match(/^(\d+)\s*(s|m|h|d)$/);
+  if (!match) return 24 * 60 * 60 * 1000;
+  const value = parseInt(match[1], 10);
+  const unit = match[2];
+  const multipliers = { s: 1000, m: 60 * 1000, h: 60 * 60 * 1000, d: 24 * 60 * 60 * 1000 };
+  return value * multipliers[unit];
+}
+
 function cookieOptions() {
   return {
     httpOnly: true,
     path: '/',
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
-    maxAge: 24 * 60 * 60 * 1000,
+    maxAge: parseDurationToMs(process.env.JWT_EXPIRES_IN || '1d'),
   };
 }
 
@@ -35,10 +44,15 @@ function clearAuthCookie(response) {
   response.clearCookie(authCookieName, cookieOptions());
 }
 
+function getTokenLifetimeMs() {
+  return parseDurationToMs(process.env.JWT_EXPIRES_IN || '1d');
+}
+
 module.exports = {
   authCookieName,
   clearAuthCookie,
   createToken,
+  getTokenLifetimeMs,
   getJwtSecret,
   setAuthCookie,
 };
