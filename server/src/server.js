@@ -12,20 +12,8 @@ const userRoutes = require('./routes/userRoutes');
 const app = express();
 const port = process.env.PORT || 5050;
 
-const allowedOrigins = new Set([
-  process.env.CLIENT_URL,
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-]);
-
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.has(origin)) {
-      return callback(null, true);
-    }
-
-    return callback(new Error('Origin is not allowed'));
-  },
+  origin: true,
   credentials: true,
 }));
 app.use(express.json());

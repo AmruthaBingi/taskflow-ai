@@ -22,6 +22,15 @@ test('health endpoint responds without database startup side effects', async () 
   assert.deepEqual(await response.json(), { success: true, message: 'Server is running' });
 });
 
+test('CORS allows requests from any origin', async () => {
+  const response = await fetch(`${baseUrl}/api/health`, {
+    headers: { Origin: 'https://example.com' },
+  });
+
+  assert.equal(response.headers.get('access-control-allow-origin'), 'https://example.com');
+  assert.equal(response.headers.get('access-control-allow-credentials'), 'true');
+});
+
 test('unknown API routes return JSON 404 responses', async () => {
   const response = await fetch(`${baseUrl}/api/does-not-exist`);
   assert.equal(response.status, 404);
