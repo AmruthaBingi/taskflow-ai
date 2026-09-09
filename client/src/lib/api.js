@@ -1,4 +1,4 @@
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || `http://${window.location.hostname}:5050/api`;
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || `https://${window.location.hostname}:5050/api`;
 
 let onUnauthorized = null;
 let authExpiredFlag = false;
